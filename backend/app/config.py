@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     max_uncompressed_bytes: int = 100_000_000  # protects against zip bombs
     max_file_bytes: int = 200_000        # skip single files bigger than 200 KB
     max_files: int = 500                 # max files we agree to index
+        # Chunking
+    chunk_max_lines: int = 120           # a function/class longer than this gets split
+    chunk_window_lines: int = 60         # size of each piece when we split by lines
+    chunk_overlap_lines: int = 8         # lines repeated between neighbouring pieces
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
