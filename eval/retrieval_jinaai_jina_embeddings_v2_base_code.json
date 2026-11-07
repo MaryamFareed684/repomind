@@ -1,0 +1,401 @@
+{
+  "model": "jinaai/jina-embeddings-v2-base-code",
+  "repo": "maryamfareed684/researchpilot",
+  "chunks": 176,
+  "index_seconds": 216.9,
+  "questions": 12,
+  "summary": {
+    "vector": {
+      "hit@1": 0.583,
+      "hit@3": 0.917,
+      "hit@5": 0.917,
+      "mrr": 0.733
+    },
+    "keyword": {
+      "hit@1": 0.417,
+      "hit@3": 0.833,
+      "hit@5": 1.0,
+      "mrr": 0.631
+    },
+    "hybrid": {
+      "hit@1": 0.583,
+      "hit@3": 0.917,
+      "hit@5": 0.917,
+      "mrr": 0.762
+    }
+  },
+  "details": [
+    {
+      "id": "c01",
+      "question": "Where are the pages split into chunks?",
+      "expected": [
+        "backend/app/chunking.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/chunking.py",
+          "backend/tests/test_cleaning_chunking.py",
+          "backend/app/pipeline.py"
+        ]
+      },
+      "keyword": {
+        "rank": 1,
+        "top3": [
+          "backend/app/chunking.py",
+          "backend/app/db.py",
+          "backend/app/pipeline.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/chunking.py",
+          "backend/tests/test_cleaning_chunking.py",
+          "backend/app/pipeline.py"
+        ]
+      }
+    },
+    {
+      "id": "c02",
+      "question": "Where is the text pulled out of a PDF, page by page?",
+      "expected": [
+        "backend/app/pdf_utils.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/pdf_utils.py",
+          "backend/tests/test_upload.py",
+          "backend/tests/test_search.py"
+        ]
+      },
+      "keyword": {
+        "rank": 2,
+        "top3": [
+          "backend/tests/test_upload.py",
+          "backend/app/pdf_utils.py",
+          "backend/tests/test_cleaning_chunking.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/pdf_utils.py",
+          "backend/tests/test_upload.py",
+          "backend/tests/test_cleaning_chunking.py"
+        ]
+      }
+    },
+    {
+      "id": "c03",
+      "question": "Where are repeated headers and footers removed?",
+      "expected": [
+        "backend/app/cleaning.py"
+      ],
+      "vector": {
+        "rank": 2,
+        "top3": [
+          "backend/tests/test_cleaning_chunking.py",
+          "backend/app/cleaning.py",
+          "backend/tests/test_ask.py"
+        ]
+      },
+      "keyword": {
+        "rank": 3,
+        "top3": [
+          "backend/tests/test_cleaning_chunking.py",
+          "backend/app/pipeline.py",
+          "backend/app/cleaning.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 2,
+        "top3": [
+          "backend/tests/test_cleaning_chunking.py",
+          "backend/app/cleaning.py",
+          "backend/app/pipeline.py"
+        ]
+      }
+    },
+    {
+      "id": "c04",
+      "question": "Where are chunks turned into vectors?",
+      "expected": [
+        "backend/app/embeddings.py"
+      ],
+      "vector": {
+        "rank": 8,
+        "top3": [
+          "backend/app/hybrid.py",
+          "backend/app/vector_store.py",
+          "backend/app/chunking.py"
+        ]
+      },
+      "keyword": {
+        "rank": 5,
+        "top3": [
+          "backend/tests/conftest.py",
+          "backend/app/cleaning.py",
+          "backend/app/pipeline.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 7,
+        "top3": [
+          "backend/app/vector_store.py",
+          "backend/app/pipeline.py",
+          "backend/app/chunking.py"
+        ]
+      }
+    },
+    {
+      "id": "c05",
+      "question": "Where are chunks stored in and searched from Qdrant?",
+      "expected": [
+        "backend/app/vector_store.py"
+      ],
+      "vector": {
+        "rank": 3,
+        "top3": [
+          "backend/app/hybrid.py",
+          "backend/app/rag.py",
+          "backend/app/vector_store.py"
+        ]
+      },
+      "keyword": {
+        "rank": 2,
+        "top3": [
+          "backend/app/pipeline.py",
+          "backend/app/vector_store.py",
+          "backend/app/config.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/vector_store.py",
+          "backend/app/hybrid.py",
+          "backend/app/pipeline.py"
+        ]
+      }
+    },
+    {
+      "id": "c06",
+      "question": "Where do keyword search (BM25) and Reciprocal Rank Fusion happen?",
+      "expected": [
+        "backend/app/hybrid.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/hybrid.py",
+          "backend/app/rag.py",
+          "backend/app/rerank.py"
+        ]
+      },
+      "keyword": {
+        "rank": 1,
+        "top3": [
+          "backend/app/hybrid.py",
+          "backend/requirements.txt",
+          "eval/known_failures.md"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/hybrid.py",
+          "eval/known_failures.md",
+          "backend/app/rag.py"
+        ]
+      }
+    },
+    {
+      "id": "c07",
+      "question": "Where does the reranker re-order the top results?",
+      "expected": [
+        "backend/app/rerank.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/rerank.py",
+          "backend/app/hybrid.py",
+          "backend/app/rag.py"
+        ]
+      },
+      "keyword": {
+        "rank": 1,
+        "top3": [
+          "backend/app/rerank.py",
+          "eval/known_failures.md",
+          "backend/app/main.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/rerank.py",
+          "backend/app/rag.py",
+          "eval/known_failures.md"
+        ]
+      }
+    },
+    {
+      "id": "c08",
+      "question": "Where is the choice between vector-only and hybrid search made?",
+      "expected": [
+        "backend/app/rag.py"
+      ],
+      "vector": {
+        "rank": 2,
+        "top3": [
+          "backend/app/hybrid.py",
+          "backend/app/rag.py",
+          "backend/app/vector_store.py"
+        ]
+      },
+      "keyword": {
+        "rank": 1,
+        "top3": [
+          "backend/app/rag.py",
+          "backend/app/hybrid.py",
+          "backend/app/vector_store.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 2,
+        "top3": [
+          "backend/app/hybrid.py",
+          "backend/app/rag.py",
+          "backend/app/vector_store.py"
+        ]
+      }
+    },
+    {
+      "id": "c09",
+      "question": "Where is each answer's status (answered, unverified, and so on) decided?",
+      "expected": [
+        "backend/app/rag.py"
+      ],
+      "vector": {
+        "rank": 3,
+        "top3": [
+          "eval/run.py",
+          "eval/rescore.py",
+          "backend/app/rag.py"
+        ]
+      },
+      "keyword": {
+        "rank": 3,
+        "top3": [
+          "frontend/src/components/StatusBadge.jsx",
+          "backend/tests/test_ask.py",
+          "backend/app/rag.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 2,
+        "top3": [
+          "frontend/src/components/StatusBadge.jsx",
+          "backend/app/rag.py",
+          "eval/known_failures.md"
+        ]
+      }
+    },
+    {
+      "id": "c10",
+      "question": "Where is the Groq call and the handling of rate-limit errors?",
+      "expected": [
+        "backend/app/llm.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/llm.py",
+          "backend/tests/test_ask.py",
+          "backend/app/config.py"
+        ]
+      },
+      "keyword": {
+        "rank": 2,
+        "top3": [
+          "backend/tests/test_ask.py",
+          "backend/app/llm.py",
+          "backend/app/config.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 2,
+        "top3": [
+          "backend/tests/test_ask.py",
+          "backend/app/llm.py",
+          "backend/app/config.py"
+        ]
+      }
+    },
+    {
+      "id": "c11",
+      "question": "Where does the app stop a very large upload?",
+      "expected": [
+        "backend/app/main.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/main.py",
+          "frontend/src/components/UploadBox.jsx",
+          "backend/tests/test_upload.py"
+        ]
+      },
+      "keyword": {
+        "rank": 5,
+        "top3": [
+          "backend/tests/test_library.py",
+          "backend/tests/test_ask.py",
+          "backend/app/rag.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/main.py",
+          "backend/tests/test_upload.py",
+          "frontend/src/components/UploadBox.jsx"
+        ]
+      }
+    },
+    {
+      "id": "c12",
+      "question": "Where is the embedding model loaded?",
+      "expected": [
+        "backend/app/embeddings.py"
+      ],
+      "vector": {
+        "rank": 1,
+        "top3": [
+          "backend/app/embeddings.py",
+          "backend/app/rerank.py",
+          "backend/tests/conftest.py"
+        ]
+      },
+      "keyword": {
+        "rank": 1,
+        "top3": [
+          "backend/app/embeddings.py",
+          "backend/Dockerfile",
+          "backend/app/rerank.py"
+        ]
+      },
+      "hybrid": {
+        "rank": 1,
+        "top3": [
+          "backend/app/embeddings.py",
+          "backend/app/rerank.py",
+          "backend/Dockerfile"
+        ]
+      }
+    }
+  ]
+}

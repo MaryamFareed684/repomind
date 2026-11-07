@@ -1,0 +1,14 @@
+[
+  {"id": "c01", "question": "Where are the pages split into chunks?", "expected_files": ["backend/app/chunking.py"]},
+  {"id": "c02", "question": "Where is the text pulled out of a PDF, page by page?", "expected_files": ["backend/app/pdf_utils.py"]},
+  {"id": "c03", "question": "Where are repeated headers and footers removed?", "expected_files": ["backend/app/cleaning.py"]},
+  {"id": "c04", "question": "Where are chunks turned into vectors?", "expected_files": ["backend/app/embeddings.py"]},
+  {"id": "c05", "question": "Where are chunks stored in and searched from Qdrant?", "expected_files": ["backend/app/vector_store.py"]},
+  {"id": "c06", "question": "Where do keyword search (BM25) and Reciprocal Rank Fusion happen?", "expected_files": ["backend/app/hybrid.py"]},
+  {"id": "c07", "question": "Where does the reranker re-order the top results?", "expected_files": ["backend/app/rerank.py"]},
+  {"id": "c08", "question": "Where is the choice between vector-only and hybrid search made?", "expected_files": ["backend/app/rag.py"]},
+  {"id": "c09", "question": "Where is each answer's status (answered, unverified, and so on) decided?", "expected_files": ["backend/app/rag.py"]},
+  {"id": "c10", "question": "Where is the Groq call and the handling of rate-limit errors?", "expected_files": ["backend/app/llm.py"]},
+  {"id": "c11", "question": "Where does the app stop a very large upload?", "expected_files": ["backend/app/main.py"]},
+  {"id": "c12", "question": "Where is the embedding model loaded?", "expected_files": ["backend/app/embeddings.py"]}
+]

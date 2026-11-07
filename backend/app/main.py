@@ -1,19 +1,25 @@
-from collections import Counter
+from contextlib import asynccontextmanager
+from typing import Literal
 
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from .github import (
-    RepoError,
-    download_zip,
-    extract_files,
-    get_repo_info,
-    parse_repo_url,
-)
+from . import jobs, store
+from . import search as search_module
+from .github import RepoError, get_repo_info, parse_repo_url
+from .jobs import IndexStatus
+from .search import Hit
 
-app = FastAPI(title="RepoMind")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    store.reset_client()  # close the local Qdrant database cleanly on shutdown
+
+
+app = FastAPI(title="RepoMind", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -25,20 +31,7 @@ app.add_middleware(
 
 class RepoRequest(BaseModel):
     url: str
-
-
-class FileSummary(BaseModel):
-    path: str
-    language: str
-    size: int
-
-
-class RepoResponse(BaseModel):
-    repo: str
-    branch: str
-    file_count: int
-    languages: dict[str, int]
-    files: list[FileSummary]
+    refresh: bool = False  # true = index again even if it is already indexed
 
 
 @app.get("/health")
@@ -46,27 +39,52 @@ def health():
     return {"status": "ok"}
 
 
-@app.post("/repos", response_model=RepoResponse)
-async def add_repo(req: RepoRequest):
+@app.post("/repos", response_model=IndexStatus, status_code=202)
+async def add_repo(req: RepoRequest, background: BackgroundTasks):
+    """Check the repo quickly, then index it in the background."""
     try:
-        owner, repo = parse_repo_url(req.url)
+        owner, name = parse_repo_url(req.url)
+        repo = f"{owner}/{name}".lower()
+
+        existing = jobs.get_status(repo)
+        if existing and existing.state in ("queued", "indexing"):
+            return existing
+        if existing and existing.state == "ready" and not req.refresh:
+            return existing
+
         async with httpx.AsyncClient(timeout=30) as client:
-            info = await get_repo_info(client, owner, repo)
-            branch = info.get("default_branch", "main")
-            zip_bytes = await download_zip(client, owner, repo, branch)
-        files = extract_files(zip_bytes)
+            info = await get_repo_info(client, owner, name)
     except RepoError as err:
         raise HTTPException(status_code=err.status_code, detail=err.message)
     except httpx.HTTPError:
         raise HTTPException(status_code=502, detail="Could not reach GitHub.")
 
-    if not files:
-        raise HTTPException(status_code=422, detail="No indexable source files found.")
+    branch = info.get("default_branch", "main")
+    status = jobs.start(repo, branch)
+    background.add_task(jobs.run_index, owner, name, branch)
+    return status.model_copy()
 
-    return RepoResponse(
-        repo=f"{owner}/{repo}",
-        branch=branch,
-        file_count=len(files),
-        languages=dict(Counter(f.language for f in files)),
-        files=[FileSummary(path=f.path, language=f.language, size=f.size) for f in files],
-    )
+
+@app.get("/repos/{owner}/{name}", response_model=IndexStatus)
+def repo_status(owner: str, name: str):
+    status = jobs.get_status(f"{owner}/{name}".lower())
+    if status is None:
+        raise HTTPException(status_code=404, detail="Repository has not been indexed.")
+    return status
+
+
+@app.get("/repos/{owner}/{name}/search", response_model=list[Hit])
+def search_repo(
+    owner: str,
+    name: str,
+    q: str = Query(min_length=1, max_length=500),
+    mode: Literal["hybrid", "vector", "keyword"] = "hybrid",
+    limit: int = Query(8, ge=1, le=20),
+):
+    repo = f"{owner}/{name}".lower()
+    status = jobs.get_status(repo)
+    if status is None:
+        raise HTTPException(status_code=404, detail="Repository has not been indexed.")
+    if status.state != "ready":
+        raise HTTPException(status_code=409, detail=f"Repository is {status.state}.")
+    return search_module.search(repo, q, limit=limit, mode=mode)

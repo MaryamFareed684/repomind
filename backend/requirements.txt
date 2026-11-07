@@ -4,3 +4,5 @@ httpx
 pydantic-settings
 pytest
 pytest-asyncio
+fastembed
+qdrant-client

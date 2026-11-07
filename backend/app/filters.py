@@ -1,4 +1,8 @@
-"""Decide which files in a repository are worth indexing."""
+"""Decide which files in a repository are worth indexing.
+
+We use an ALLOW-list of extensions (safer than trying to block every binary
+type) plus a SKIP-list of folders, lock files and secret-looking files.
+"""
 from pathlib import PurePosixPath
 
 from .config import settings
@@ -57,6 +61,8 @@ def should_index(path: str, size: int) -> bool:
         return False
     if language_of(path) is None:
         return False
+    if p.suffix.lower() == ".json" and size > settings.max_json_bytes:
+        return False  # result dumps, fixtures, datasets: noise for code questions
     return 0 < size <= settings.max_file_bytes
 
 
