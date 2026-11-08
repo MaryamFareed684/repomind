@@ -4,14 +4,14 @@ from typing import Literal
 import httpx
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from . import jobs, store
+from . import ask as ask_module
+from . import jobs, llm, store
 from . import search as search_module
 from .github import RepoError, get_repo_info, parse_repo_url
 from .jobs import IndexStatus
 from .search import Hit
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -88,3 +88,21 @@ def search_repo(
     if status.state != "ready":
         raise HTTPException(status_code=409, detail=f"Repository is {status.state}.")
     return search_module.search(repo, q, limit=limit, mode=mode)
+
+
+class AskRequest(BaseModel):
+    question: str = Field(min_length=3, max_length=500)
+
+
+@app.post("/repos/{owner}/{name}/ask", response_model=ask_module.AskResponse)
+async def ask_repo(owner: str, name: str, req: AskRequest):
+    repo = f"{owner}/{name}".lower()
+    status = jobs.get_status(repo)
+    if status is None:
+        raise HTTPException(status_code=404, detail="Repository has not been indexed.")
+    if status.state != "ready":
+        raise HTTPException(status_code=409, detail=f"Repository is {status.state}.")
+    try:
+        return await ask_module.ask(repo, req.question.strip())
+    except llm.LLMError as err:
+        raise HTTPException(status_code=err.status_code, detail=err.message)
