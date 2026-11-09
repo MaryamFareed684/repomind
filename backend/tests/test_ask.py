@@ -223,3 +223,23 @@ def test_fancy_brackets_are_accepted():
     r = verify("Passwords are checked in `verify_password`【1】and more ［2］, 【1，2】.", evidence_for(chunks), chunks)
     assert r.status == "answered" and [c.n for c in r.citations] == [1, 2]
     assert "【" not in r.answer
+
+
+# ---------- Day 5: file endpoint ----------
+def test_file_endpoint_returns_text_and_blocks_other_paths():
+    from app import sources
+    files = [RepoFile(path="auth.py", language="python", size=1, text=AUTH)]
+    jobs.start("o/r", "main").files = [jobs.FileSummary(path="auth.py", language="python", size=1)]
+    sources.save("o/r", files)
+    c = TestClient(app)
+    ok = c.get("/repos/o/r/file", params={"path": "auth.py"})
+    assert ok.status_code == 200 and ok.json()["text"] == AUTH and ok.json()["language"] == "python"
+    assert c.get("/repos/o/r/file", params={"path": "../../etc/passwd"}).status_code == 404
+    assert c.get("/repos/o/r/file", params={"path": "other.py"}).status_code == 404
+    assert c.get("/repos/x/y/file", params={"path": "auth.py"}).status_code == 404
+
+
+def test_sources_refuse_to_escape_their_folder():
+    from app import sources
+    sources.save("o/r", [RepoFile(path="../evil.py", language="python", size=1, text="x")])
+    assert sources.read("o/r", "../evil.py") is None

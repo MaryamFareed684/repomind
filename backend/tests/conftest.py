@@ -24,8 +24,9 @@ def fake_vector(text: str) -> list[float]:
 
 
 @pytest.fixture(autouse=True)
-def isolated(monkeypatch):
+def isolated(monkeypatch, tmp_path):
     monkeypatch.setattr(settings, "qdrant_path", ":memory:")
+    monkeypatch.setattr(settings, "sources_path", str(tmp_path / "sources"))
     monkeypatch.setattr(
         embedder,
         "embed_chunks",

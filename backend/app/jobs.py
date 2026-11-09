@@ -10,7 +10,7 @@ from typing import Literal
 import httpx
 from pydantic import BaseModel
 
-from . import search, store
+from . import search, sources, store
 from .chunker import chunk_repo
 from .github import RepoError, download_zip, extract_files
 
@@ -55,6 +55,7 @@ def process_zip(repo: str, zip_bytes: bytes) -> None:
     if not files:
         raise RepoError("No indexable source files found.", 422)
     chunks = chunk_repo(files)
+    sources.save(repo, files)  # the code viewer reads these later
 
     status.files = [FileSummary(path=f.path, language=f.language, size=f.size) for f in files]
     status.file_count = len(files)

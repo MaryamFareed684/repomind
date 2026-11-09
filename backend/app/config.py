@@ -20,7 +20,8 @@ class Settings(BaseSettings):
 
     # Embeddings and search
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"  # runs via fastembed (ONNX)
-    qdrant_path: str = "data/qdrant"     # local folder; ":memory:" in tests
+    qdrant_path: str = "data/qdrant"
+    sources_path: str = "data/sources"   # full text of indexed files, for the code viewer     # local folder; ":memory:" in tests
     embed_batch_size: int = 32           # chunks embedded per step
     candidate_k: int = 30                # results each method returns before merging
     rrf_k: int = 60                      # the "60" in 1 / (60 + rank)

@@ -1,0 +1,120 @@
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --text: #1d2330; --muted: #667085; --line: #e3e6ec;
+  --accent: #3b5bdb; --accent-text: #ffffff; --hl: #fff3bf; --code-bg: #f1f3f7;
+  --ok: #1f7a4d; --ok-bg: #e3f6ec; --warn: #8a5a00; --warn-bg: #fff1d6; --bad: #b42318;
+  --neutral-bg: #eceff4;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11141a; --panel: #1a1f29; --text: #e6e9ef; --muted: #98a2b3; --line: #2b3240;
+    --accent: #7c93ff; --accent-text: #0e1220; --hl: #4a4217; --code-bg: #222938;
+    --ok: #6fd3a0; --ok-bg: #173627; --warn: #f1c46b; --warn-bg: #3a2e12; --bad: #ff8b7e;
+    --neutral-bg: #262d3b;
+  }
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.55; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { display: flex; flex-direction: column; height: 100%; padding: 16px; gap: 10px; max-width: 1700px; margin: 0 auto; }
+.top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.top h1 { margin: 0; font-size: 22px; }
+.repo-form, .ask-form { display: flex; gap: 8px; flex: 1; min-width: 260px; }
+input {
+  flex: 1; min-width: 0; padding: 9px 12px; border: 1px solid var(--line);
+  border-radius: 8px; background: var(--panel);
+}
+.repo-form button, .ask-form button {
+  padding: 9px 18px; border: 0; border-radius: 8px; background: var(--accent);
+  color: var(--accent-text); font-weight: 600;
+}
+
+.status { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; }
+.pill { padding: 2px 10px; border-radius: 999px; background: var(--neutral-bg); font-size: 13px; }
+.status-ready .pill { background: var(--ok-bg); color: var(--ok); }
+.status-failed .pill { background: var(--warn-bg); color: var(--bad); }
+.progress { width: 160px; height: 8px; border-radius: 99px; background: var(--neutral-bg); overflow: hidden; }
+.progress-fill { display: block; height: 100%; background: var(--accent); transition: width 0.4s; }
+.muted { color: var(--muted); }
+.error-text { color: var(--bad); }
+.banner { margin: 0; }
+.pad { padding: 12px; }
+
+.panes {
+  flex: 1; min-height: 0; display: grid; gap: 12px;
+  grid-template-columns: 250px minmax(320px, 1fr) minmax(340px, 1.2fr);
+}
+.pane {
+  display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+}
+.pane > h2 {
+  margin: 0; padding: 10px 14px; font-size: 13px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--line);
+}
+
+.tree { overflow: auto; padding: 6px 0; flex: 1; }
+.tree-row {
+  display: block; width: 100%; text-align: left; border: 0; background: none;
+  padding-top: 3px; padding-bottom: 3px; padding-right: 8px; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; font-size: 14px;
+}
+.tree-row:hover { background: var(--code-bg); }
+.tree-row.selected { background: var(--accent); color: var(--accent-text); }
+.tree-row.dir { font-weight: 600; }
+.caret { display: inline-block; width: 12px; color: var(--muted); }
+.tree-row.selected .caret { color: inherit; }
+
+.chat { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.messages { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.ask-form { padding: 10px 14px; border-top: 1px solid var(--line); flex: none; }
+.empty { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.suggestion {
+  border: 1px solid var(--line); background: var(--code-bg); border-radius: 999px; padding: 5px 12px; font-size: 14px;
+}
+.msg { max-width: 92%; padding: 10px 14px; border-radius: 12px; }
+.msg p { margin: 0; }
+.msg.user { align-self: flex-end; background: var(--accent); color: var(--accent-text); }
+.msg.assistant { align-self: flex-start; background: var(--code-bg); }
+.msg.error { align-self: flex-start; background: var(--warn-bg); }
+.answer-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+code { background: var(--panel); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; font-size: 0.92em; }
+.cite {
+  margin: 0 2px; padding: 0 6px; border: 1px solid var(--accent); border-radius: 6px;
+  background: none; color: var(--accent); font-size: 12px; font-weight: 700; vertical-align: 1px;
+}
+.cite:hover { background: var(--accent); color: var(--accent-text); }
+.badge { display: inline-block; margin-top: 8px; padding: 1px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+.badge.ok { background: var(--ok-bg); color: var(--ok); }
+.badge.warn { background: var(--warn-bg); color: var(--warn); }
+.badge.neutral { background: var(--neutral-bg); color: var(--muted); }
+.problems { margin: 6px 0 0; padding-left: 18px; color: var(--warn); font-size: 13px; }
+.sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.source {
+  border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 2px 8px;
+  font: 12px ui-monospace, Consolas, monospace; text-align: left; overflow-wrap: anywhere;
+}
+.source:hover { border-color: var(--accent); }
+.evidence { margin-top: 8px; font-size: 13px; color: var(--muted); }
+.evidence ol { margin: 6px 0 0; padding-left: 22px; font-family: ui-monospace, Consolas, monospace; }
+
+.viewer { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.viewer-head { display: flex; gap: 10px; align-items: center; padding: 8px 14px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.code { flex: 1; overflow: auto; font: 13px/1.55 ui-monospace, "Cascadia Code", Consolas, monospace; padding: 6px 0; }
+.line { display: flex; min-width: max-content; }
+.line.hl { background: var(--hl); }
+.no { flex: none; width: 52px; padding-right: 12px; text-align: right; color: var(--muted); user-select: none; }
+.src { white-space: pre; padding-right: 16px; }
+
+@media (max-width: 1000px) {
+  .app { height: auto; min-height: 100%; }
+  .panes { grid-template-columns: 1fr; }
+  .pane { height: 420px; }
+}

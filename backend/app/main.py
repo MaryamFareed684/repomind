@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from . import ask as ask_module
-from . import jobs, llm, store
+from . import jobs, llm, sources, store
 from . import search as search_module
 from .github import RepoError, get_repo_info, parse_repo_url
 from .jobs import IndexStatus
@@ -106,3 +106,23 @@ async def ask_repo(owner: str, name: str, req: AskRequest):
         return await ask_module.ask(repo, req.question.strip())
     except llm.LLMError as err:
         raise HTTPException(status_code=err.status_code, detail=err.message)
+
+
+class FileContent(BaseModel):
+    path: str
+    language: str
+    text: str
+
+
+@app.get("/repos/{owner}/{name}/file", response_model=FileContent)
+def read_file(owner: str, name: str, path: str = Query(min_length=1, max_length=500)):
+    """Source of one indexed file. Only paths from the index are allowed."""
+    repo = f"{owner}/{name}".lower()
+    status = jobs.get_status(repo)
+    if status is None:
+        raise HTTPException(status_code=404, detail="Repository has not been indexed.")
+    summary = next((f for f in status.files if f.path == path), None)
+    text = sources.read(repo, path) if summary else None
+    if summary is None or text is None:
+        raise HTTPException(status_code=404, detail="File not found in the index.")
+    return FileContent(path=path, language=summary.language, text=text)

@@ -55,6 +55,8 @@ def test_should_index_rules():
     assert not should_index("big.py", 10_000_000)             # too large
     assert not should_index("empty.py", 0)
     assert not should_index("../evil.py", 10)                 # path trick
+    assert not should_index("eval/results.json", 16_000)      # big json = data, not code
+    assert should_index("package.json", 700)                  # small json = config
 
 
 # ---------- zip extraction ----------
